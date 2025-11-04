@@ -1,192 +1,4 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reflections of Love – 25th Anniversary</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <style>
-    :root{ --bg-start:#fff5f8; --bg-end:#ffe8ef; --accent:#b84a62; --text:#6b3245 }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:'Poppins',system-ui,Arial;background:linear-gradient(180deg,var(--bg-start),var(--bg-end));color:var(--text);overflow:hidden;}
-    .top{position:relative;padding:14px 16px;text-align:center}
-    h1{font-family:'Great Vibes',cursive;margin:6px 0;font-size:28px;color:var(--accent)}
-    .subtitle{font-size:13px;color:#9a6573;margin-top:4px}
-    .container{max-width:680px;margin:0 auto;padding:12px}
-    .card{background:rgba(255,255,255,0.92);border-radius:14px;padding:14px;box-shadow:0 10px 30px rgba(184,74,98,0.08);border:1px solid rgba(255,255,255,0.6)}
-    input,textarea,button{font-family:inherit}
-    input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(184,74,98,0.06);margin-top:10px;background:rgba(255,255,255,0.7)}
-    textarea{min-height:88px;resize:none}
-    .row{display:flex;gap:10px;margin-top:12px}
-    .btn{flex:1;padding:12px;border-radius:12px;border:0;cursor:pointer;font-weight:700}
-    .btn.primary{background:linear-gradient(90deg,#ff98b3,#ff7fa6);color:#fff}
-    .rose-icon{position:fixed;right:14px;top:14px;z-index:60;width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--accent);box-shadow:0 6px 20px rgba(184,74,98,0.06);cursor:pointer}
-    .reflections{margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-    .reflection{position:relative;width:150px;height:140px;display:flex;align-items:center;justify-content:center}
-    .reflection svg{position:absolute;left:0;top:0;width:100%;height:100%}
-    .reflection .txt{position:relative;padding:10px 12px;text-align:center;z-index:2}
-    .reflection .txt strong{display:block;color:var(--accent);font-size:13px;margin-bottom:6px}
-    .reflection .txt p{margin:0;font-size:13px;color:#5a2938}
-    @keyframes appear { from { opacity:0; transform: translateY(12px) scale(.98) } to { opacity:1; transform: none } }
-    .appear{animation:appear 480ms ease forwards}
-
-    /* Floating hearts (updated) */
-    .floating-heart {
-      position: fixed;
-      bottom: -40px;
-      left: 0;
-      width: 28px;
-      height: 28px;
-      background: radial-gradient(circle at 30% 30%, #fff2f6, #ff9fb3);
-      pointer-events: none;
-      opacity: 0.9;
-      transform: translateY(0) scale(1) rotate(0deg);
-      transition: transform 6s linear, opacity 6s linear;
-      clip-path: path("M24.5 7.5c0-4.142-3.358-7.5-7.5-7.5-2.292 0-4.35 1.032-5.727 2.673C9.85 1.032 7.792 0 5.5 0 1.358 0-2 3.358-2 7.5c0 6.068 11.727 13.5 11.727 13.5S24.5 13.568 24.5 7.5z");
-    }
-    footer{margin:18px 0;text-align:center;color:#a57b85;font-size:13px}
-    @media(min-width:720px){ .reflections{justify-content:flex-start} }
-  </style>
-</head>
-<body>
-  <div class="rose-icon" id="hostBtn" title="Host controls">🌹</div>
-  <div class="top">
-    <h1>Reflections of Love</h1>
-    <div class="subtitle">Share one short line — what is the best thing about this couple?</div>
-  </div>
-
-  <div class="container">
-    <div class="card">
-      <input id="name" placeholder="Your name (optional)" />
-      <textarea id="message" placeholder="Write your reflection... (short & sweet)"></textarea>
-      <div class="row">
-        <button class="btn primary" id="shareBtn">💌 Share Reflection</button>
-      </div>
-    </div>
-    <div class="reflections" id="reflections"></div>
-  </div>
-
-  <div class="popup" id="popup">
-    <div style="font-family:'Great Vibes', cursive;font-size:20px;color:#b84a62">
-      Thank you for sharing your love 💖
-    </div>
-  </div>
-
-  <script>
-    const firebaseConfig = {
-  apiKey: "AIzaSyCN7bInvVGF4hs3ltay6CDFZPb-PHn5-z4",
-  authDomain: "shaadi-37989.firebaseapp.com",
-  databaseURL: "https://shaadi-37989-default-rtdb.firebaseio.com",
-  projectId: "shaadi-37989",
-  storageBucket: "shaadi-37989.firebasestorage.app",
-  messagingSenderId: "387679349833",
-  appId: "1:387679349833:web:5760c2fba73838e9bd6398",
-  measurementId: "G-WLRD9P4R6Y"
-};
-
-
-    try {
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    } catch (err) {
-      console.error("Firebase init error:", err);
-      const el = document.createElement("div");
-      el.style.padding = "12px";
-      el.style.background = "#fff0f4";
-      el.style.color = "#b84a62";
-      el.style.textAlign = "center";
-      el.style.margin = "12px";
-      el.textContent = "Firebase not configured. Please paste your firebaseConfig into the page.";
-      document.body.prepend(el);
-    }
-
-    const db = firebase.database();
-    const reflectionsRef = db.ref("reflections");
-
-    const shareBtn = document.getElementById("shareBtn");
-    const nameEl = document.getElementById("name");
-    const msgEl = document.getElementById("message");
-    const feed = document.getElementById("reflections");
-    const popup = document.getElementById("popup");
-    const hostBtn = document.getElementById("hostBtn");
-    const HOST_PIN = "1616";
-
-    shareBtn.addEventListener("click", () => {
-      const text = msgEl.value.trim();
-      const name = nameEl.value.trim() || "A Friend";
-      if (!text) {
-        msgEl.animate([{ transform: "translateX(-6px)" }, { transform: "translateX(6px)" }, { transform: "translateX(0)" }], { duration: 300 });
-        return;
-      }
-      reflectionsRef.push({ name, text, ts: Date.now() }).then(() => {
-        msgEl.value = "";
-        showPopup();
-      });
-    });
-
-    function renderEntry(item) {
-      const wrapper = document.createElement("div");
-      wrapper.className = "reflection appear";
-      const svg = `
-        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <path d="M50 82 L15 47 A22 22 0 0 1 50 19 A22 22 0 0 1 85 47 Z" fill="#ffdce5" stroke="#ffc0d0" stroke-width="1.5" />
-        </svg>`;
-      wrapper.innerHTML = svg + `<div class="txt"><strong>${escapeHtml(item.name)}</strong><p>${escapeHtml(item.text)}</p></div>`;
-      feed.insertBefore(wrapper, feed.firstChild);
-      while (feed.children.length > 500) feed.removeChild(feed.lastChild);
-    }
-
-    function escapeHtml(s) {
-      if (!s) return "";
-      return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-    }
-
-    reflectionsRef.orderByChild("ts").limitToLast(500).on("child_added", (snap) => {
-      const v = snap.val();
-      if (v) renderEntry(v);
-    });
-
-    function showPopup() {
-      popup.classList.add("show");
-      setTimeout(() => popup.classList.remove("show"), 1600);
-    }
-
-    hostBtn.addEventListener("click", () => {
-      const pin = prompt("Enter Host PIN:");
-      if (pin === HOST_PIN) {
-        if (confirm("Clear all reflections?")) {
-          reflectionsRef.remove().then(() => {
-            feed.innerHTML = "";
-            alert("All reflections cleared 🌹");
-          });
-        }
-      } else if (pin) alert("Incorrect PIN");
-    });
-
-    // Floating heart animation with variation
-    function spawnHeart() {
-      const el = document.createElement("div");
-      el.className = "floating-heart";
-      const size = 14 + Math.random() * 22;
-      el.style.left = Math.random() * 100 + "vw";
-      el.style.width = size + "px";
-      el.style.height = size + "px";
-      el.style.transform = `translateY(0) scale(${1 + Math.random() * 0.3}) rotate(${Math.random() * 360}deg)`;
-      document.body.appendChild(el);
-
-      requestAnimationFrame(() => {
-        el.style.transform = `translateY(-120vh) scale(${1 + Math.random() * 0.3}) rotate(${Math.random() * 360}deg)`;
-        el.style.opacity = "0";
-      });
-
-      setTimeout(() => el.remove(), 6000);
-    }
-    setInterval(spawnHeart, 600);
-  </script>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -296,17 +108,17 @@ textarea{min-height:88px;resize:none}
   <div class="host-list" id="hostList"></div>
 </div>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCN7bInvVGF4hs3ltay6CDFZPb-PHn5-z4",
-  authDomain: "shaadi-37989.firebaseapp.com",
-  databaseURL: "https://shaadi-37989-default-rtdb.firebaseio.com",
-  projectId: "shaadi-37989",
-  storageBucket: "shaadi-37989.firebasestorage.app",
-  messagingSenderId: "387679349833",
-  appId: "1:387679349833:web:5760c2fba73838e9bd6398",
-  measurementId: "G-WLRD9P4R6Y"
+<script>const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 const ref=db.ref("reflections");
